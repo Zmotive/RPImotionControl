@@ -30,24 +30,22 @@ direction.off()
 
 #set global speed variables
 motorSpeed = 100.0
-status = "stopped"
 
-def stop():
-    global disable
+#The motor can handle 1000Hz for startup (probably not under load)
+def toggleStartStop():
     global motorSpeed
-    global status
-    disable.on()
-    motorSpeed = 100.0
-    status = "stopped"
+    if motorSpeed > 2000.0:
+        motorSpeed = 2000.0
+    disable.toggle()
 
-def start():
-    global disable
+def changeDir():
     global motorSpeed
-    global status
-    disable.off()
-    motorSpeed = 100.0
-    status = "started"
+    if motorSpeed > 2000.0:
+        motorSpeed = 2000.0
+    direction.toggle()
 
+#8000 is actually 4000Hz (on then off)
+#8000 cannot be used from a cold start, the motor has to ramp to it
 def increaseSpeed():
     global motorSpeed
     motorSpeed = motorSpeed + 100.0
@@ -69,15 +67,18 @@ def motorThread():
         step.off()
         sleep(1.0/motorSpeed)
 
+#Start up the motor Thread
 threading.Thread(target = motorThread).start()
 
+#Set the key press actions
 actions = {
-    curses.KEY_UP:    increaseSpeed,
-    curses.KEY_DOWN:  decreaseSpeed,
-    curses.KEY_ENTER: disable.on,
-    curses.KEY_BACKSPACE: disable.off,
+    curses.KEY_UP:          increaseSpeed,
+    curses.KEY_DOWN:        decreaseSpeed,
+    curses.KEY_BACKSPACE:   toggleStartStop,
+    curses.KEY_LEFT:        changeDir,
 }
 
+#key screen
 def main(window):
     next_key = None
     while True:
@@ -90,5 +91,6 @@ def main(window):
             if action is not None:
                 action()
 
+#Start the key screen (press ctrl+c twice to end it)
 curses.wrapper(main)
 
