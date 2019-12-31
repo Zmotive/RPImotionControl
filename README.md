@@ -18,6 +18,7 @@ some Jumpers: https://www.amazon.com/gp/product/B01L5ULRUA/ref=ppx_yo_dt_b_searc
 The Capacitor is to keep a stable 24VDC at the motor controller and powersupply input. 
 
 Future work is to:
+	
 	-Put EEPROM chip on hat and develop driver/interface
 	-create board with up to 3 A4988 chips
 	-create SuperSpeed USB3.0 Field Bus for chaining multiple controllers together
